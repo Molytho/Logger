@@ -26,11 +26,12 @@ namespace Molytho.Logger
 
         private readonly bool bToSTDOUT;
 
-        public void WriteLogMessage(LogMessage message)
+        public void WriteLogMessage<T>(LogMessage<T> message) where T : System.Enum
         {
-            StreamWriter?.WriteLine(message);
+            string printMessage = message.ToString();
+            StreamWriter?.WriteLine(printMessage);
             if(bToSTDOUT)
-                Console.Out.WriteLine(message);
+                Console.Out.WriteLine(printMessage);
         }
 
         #region IDisposable Support
