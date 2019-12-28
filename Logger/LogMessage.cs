@@ -18,7 +18,7 @@ namespace Molytho.Logger
 
         public override string ToString()
         {
-            return String.Format("[{0}][{1}] {2}", Type.GetName(), Time.ToShortTimeString(), Message);
+            return String.Format("[{0}][{1}] {2}", Type.GetName(), Time.ToLongTimeString(), Message);
         }
     }
 }
