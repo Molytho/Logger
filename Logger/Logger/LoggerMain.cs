@@ -15,18 +15,8 @@ namespace Molytho.Logger
             fileHandler.WriteLogMessage(message);
             RaiseEvent(message);
         }
-        private void WriteDebugLogMessage(string message)
-        {
-            LogMessage<T> logMessage = new LogMessage<T>(DebugLogLevel, message, ElapsedTime);
-            WriteLogMessage(logMessage);
-        }
         public void WriteLogMessage(T logLevel, string message)
         {
-            if(logLevel.Equals(DebugLogLevel))
-            {
-                WriteDebugLogMessage(message);
-                return;
-            }
             LogMessage<T> logMessage = new LogMessage<T>(logLevel, message, ElapsedTime);
             WriteLogMessage(logMessage);
         }
