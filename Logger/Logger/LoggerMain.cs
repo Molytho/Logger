@@ -15,7 +15,6 @@ namespace Molytho.Logger
             fileHandler.WriteLogMessage(message);
             RaiseEvent(message);
         }
-        [System.Diagnostics.Conditional("DEBUG")]
         private void WriteDebugLogMessage(string message)
         {
             LogMessage<T> logMessage = new LogMessage<T>(DebugLogLevel, message, DateTime.Now);
@@ -28,7 +27,7 @@ namespace Molytho.Logger
                 WriteDebugLogMessage(message);
                 return;
             }
-            LogMessage<T> logMessage = new LogMessage<T>(logLevel, message, DateTime.Now);
+            LogMessage<T> logMessage = new LogMessage<T>(logLevel, message, ElapsedTime);
             WriteLogMessage(logMessage);
         }
     }

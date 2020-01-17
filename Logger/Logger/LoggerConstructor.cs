@@ -9,6 +9,7 @@ namespace Molytho.Logger
         public Logger(T debugEnumType, string logFilePath = "./latest.log", bool toSTDOUT = true)
         {
             DebugLogLevel = debugEnumType;
+            startTime = Now;
 
             T[] enumTypes = (T[])Enum.GetValues(typeof(T));
             logEvents = new Dictionary<T, Action<LogMessage<T>>>(enumTypes.Length);

@@ -8,7 +8,6 @@ namespace TestConsole
         static Logger<LogLevel> Logger = new Logger<LogLevel>(LogLevel.Debug);
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
             Logger.AddEvent(LogLevel.Debug, x);
             Logger.RemoveEvent(LogLevel.Debug, x);
             Logger.WriteLogMessage(LogLevel.Debug,"test");
