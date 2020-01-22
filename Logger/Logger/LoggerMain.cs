@@ -6,8 +6,9 @@ namespace Molytho.Logger
 {
     public partial class Logger<T> where T : System.Enum
     {
-        #region LogLevel
+        #region DebugLog
         public T DebugLogLevel { get; }
+        public bool IsDebugLogEnabled { get; }
         #endregion
 
         private void WriteLogMessage(LogMessage<T> message)
@@ -17,6 +18,9 @@ namespace Molytho.Logger
         }
         public void WriteLogMessage(T logLevel, string message)
         {
+            if(!IsDebugLogEnabled && Equals(logLevel, DebugLogLevel))
+                return;
+
             LogMessage<T> logMessage = new LogMessage<T>(logLevel, message, ElapsedTime);
             WriteLogMessage(logMessage);
         }
