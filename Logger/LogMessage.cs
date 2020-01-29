@@ -16,7 +16,7 @@ namespace Molytho.Logger
         public string Message { get; }
         public TimeSpan Time { get; }
 
-        public override string ToString()
+        public readonly override string ToString()
         {
             return String.Format("[{0}][{1}] {2}", Type.GetName(), Time.ToString(), Message);
         }
