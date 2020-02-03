@@ -11,7 +11,7 @@ namespace Molytho.Logger
         public bool IsDebugLogEnabled { get; }
         #endregion
 
-        private void WriteLogMessage(LogMessage<T> message)
+        private void WriteLogMessage(in LogMessage<T> message)
         {
             fileHandler.WriteLogMessage(message);
             RaiseEvent(message);

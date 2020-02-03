@@ -28,7 +28,7 @@ namespace Molytho.Logger
         private readonly object syncRoot = new object();
         private readonly bool bToSTDOUT;
 
-        public void WriteLogMessage<T>(LogMessage<T> message) where T : System.Enum
+        public void WriteLogMessage<T>(in LogMessage<T> message) where T : System.Enum
         {
             string printMessage = message.ToString();
             if(StreamWriter != null)

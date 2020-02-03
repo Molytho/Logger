@@ -22,7 +22,7 @@ namespace Molytho.Logger
         public event Action<LogMessage<T>> LogMessageAdded;
         #endregion
 
-        private void RaiseEvent(LogMessage<T> message)
+        private void RaiseEvent(in LogMessage<T> message)
         {
             logEvents[message.Type]?.Invoke(message);
 

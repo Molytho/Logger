@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Molytho.Logger
 {
-    public struct LogMessage<T> where T : System.Enum
+    public readonly struct LogMessage<T> where T : System.Enum
     {
         public LogMessage(T type, string message, TimeSpan time)
         {
