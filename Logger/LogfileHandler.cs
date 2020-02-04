@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace Molytho.Logger
 {
@@ -25,19 +26,14 @@ namespace Molytho.Logger
         private FileStream FileStream { get; }
         private StreamWriter StreamWriter { get; }
         #endregion
-        private readonly object syncRoot = new object();
         private readonly bool bToSTDOUT;
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void WriteLogMessage<T>(in LogMessage<T> message) where T : System.Enum
         {
             string printMessage = message.ToString();
             if(StreamWriter != null)
-            {
-                lock(syncRoot)
-                {
-                    StreamWriter.WriteLine(printMessage);
-                }
-            }
+                StreamWriter.WriteLine(printMessage);
             if(bToSTDOUT)
                 Console.Out.WriteLine(printMessage);
         }
