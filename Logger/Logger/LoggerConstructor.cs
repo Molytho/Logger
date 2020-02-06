@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 
 namespace Molytho.Logger
 {
     public partial class Logger<T> where T : System.Enum
     {
+        [DebuggerHidden]
         public Logger(T debugEnumType, bool debugLogEnabled = true, string logFilePath = "./latest.log", bool toSTDOUT = true) : this(logFilePath, toSTDOUT)
         {
             DebugLogLevel = debugEnumType;
             IsDebugLogEnabled = debugLogEnabled;
         }
 
+        [DebuggerHidden]
         public Logger(string logFilePath = "./latest.log", bool toSTDOUT = true)
         {
             startTime = Now;

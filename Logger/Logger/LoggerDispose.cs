@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Molytho.Logger
@@ -20,6 +21,7 @@ namespace Molytho.Logger
                 disposedValue = true;
             }
         }
+        [DebuggerHidden]
         public void Dispose()
         {
             Dispose(true);

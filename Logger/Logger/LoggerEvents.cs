@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Molytho.Logger
@@ -9,10 +10,12 @@ namespace Molytho.Logger
         #region LevelEvents
         private readonly Dictionary<T, Action<LogMessage<T>>> logEvents;
 
+        [DebuggerHidden]
         public void AddEvent(T enumType, Action<LogMessage<T>> action)
         {
             logEvents[enumType] += action;
         }
+        [DebuggerHidden]
         public void RemoveEvent(T enumType, Action<LogMessage<T>> action)
         {
             logEvents[enumType] -= action;

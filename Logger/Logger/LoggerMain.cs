@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Molytho.Logger
@@ -16,6 +17,7 @@ namespace Molytho.Logger
             fileHandler.WriteLogMessage(message);
             RaiseEvent(message);
         }
+        [DebuggerHidden]
         public void WriteLogMessage(T logLevel, string message)
         {
             if(!IsDebugLogEnabled && Equals(logLevel, DebugLogLevel))
