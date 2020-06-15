@@ -3,39 +3,56 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Molytho.Logger
 {
-    class LogfileHandler : IDisposable
+    class LogfileHandler : IDisposable, IAsyncDisposable
     {
-        public LogfileHandler(string path, bool toSTDOUT)
+        public LogfileHandler(params TextWriter[] pOutputStreams)
         {
-            bToSTDOUT = toSTDOUT;
-            if(!string.IsNullOrEmpty(path))
-            {
-                File = new FileInfo(path);
-                FileStream = !File.Exists ? File.Create() : File.Open(FileMode.Create);
-                StreamWriter = new StreamWriter(FileStream);
-            }
-            else if(!toSTDOUT)
-                throw new ArgumentException("One log way needs to be chosen");
+            if(pOutputStreams is null || pOutputStreams.Length == 0)
+                throw new ArgumentException("A minimum of one output stream must be specified", "pOutputStream");
+            outputStreams = pOutputStreams;
+            outputStreamSynchronisation = new SemaphoreSlim(1, 1);
         }
+        private readonly TextWriter[] outputStreams;
+        private readonly SemaphoreSlim outputStreamSynchronisation;
 
-        #region File
-        private FileInfo File { get; }
-        private FileStream FileStream { get; }
-        private StreamWriter StreamWriter { get; }
-        #endregion
-        private readonly bool bToSTDOUT;
-
-        [MethodImpl(MethodImplOptions.Synchronized)]
         public void WriteLogMessage<T>(in LogMessage<T> message) where T : System.Enum
         {
             string printMessage = message.ToString();
-            if(StreamWriter != null)
-                StreamWriter.WriteLine(printMessage);
-            if(bToSTDOUT)
-                Console.Out.WriteLine(printMessage);
+            try
+            {
+                outputStreamSynchronisation.Wait();
+                foreach(TextWriter item in outputStreams)
+                {
+                    item.WriteLine(printMessage);
+                }
+            }
+            finally
+            {
+                outputStreamSynchronisation.Release();
+            }
+        }
+        public async Task WriteLogMessageAsync<T>(LogMessage<T> message) where T : System.Enum
+        {
+            string printMessage = message.ToString();
+            try
+            {
+                await outputStreamSynchronisation.WaitAsync();
+                List<Task> writeTasks = new List<Task>(outputStreams.Length);
+                foreach(TextWriter item in outputStreams)
+                {
+                    writeTasks.Add(item.WriteLineAsync(printMessage));
+                }
+                await Task.WhenAll(writeTasks);
+            }
+            finally
+            {
+                outputStreamSynchronisation.Release();
+            }
         }
 
         #region IDisposable Support
@@ -47,16 +64,64 @@ namespace Molytho.Logger
             {
                 if(disposing)
                 {
-                    StreamWriter.Dispose();
-                    FileStream.Dispose();
+                    outputStreamSynchronisation.Wait();
+                    for(int i = 0; i < outputStreams.Length; i++)
+                        outputStreams[i].Dispose();
+                    outputStreamSynchronisation.Dispose();
                 }
 
                 disposedValue = true;
             }
         }
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             Dispose(true);
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            if(!disposedValue)
+            {
+                Task @lock = outputStreamSynchronisation.WaitAsync();
+                if(!@lock.IsCompletedSuccessfully)
+                    return AwaitLock(@lock);
+                for(int i = outputStreams.Length - 1; i > 0; i--)
+                {
+                    ValueTask result = outputStreams[i].DisposeAsync();
+                    if(!result.IsCompletedSuccessfully)
+                    {
+                        return Await(i, result);
+                    }
+                    result.GetAwaiter().GetResult();
+                }
+                outputStreamSynchronisation.Dispose();
+
+
+                disposedValue = true;
+            }
+            return default;
+
+            async ValueTask AwaitLock(Task pLock)
+            {
+                await pLock;
+                for(int i = outputStreams.Length - 1; i > 0; i--)
+                {
+                    await outputStreams[i].DisposeAsync();
+                }
+                disposedValue = true;
+                outputStreamSynchronisation.Dispose();
+            }
+            async ValueTask Await(int i, ValueTask task)
+            {
+                await task;
+                i--;
+                for(; i > 0; i--)
+                {
+                    await outputStreams[i].DisposeAsync();
+                }
+                disposedValue = true;
+                outputStreamSynchronisation.Dispose();
+            }
         }
         #endregion
     }
