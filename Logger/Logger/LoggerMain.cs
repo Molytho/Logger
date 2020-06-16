@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Molytho.Logger
 {
@@ -25,6 +26,16 @@ namespace Molytho.Logger
 
             LogMessage<T> logMessage = new LogMessage<T>(logLevel, message, ElapsedTime);
             WriteLogMessage(logMessage);
+        }
+        [DebuggerHidden]
+        public async Task WriteLogMessageAsync(T logLevel, string message)
+        {
+            if(!IsDebugLogEnabled && Equals(logLevel, DebugLogLevel))
+                return;
+
+            LogMessage<T> logMessage = new LogMessage<T>(logLevel, message, ElapsedTime);
+            await fileHandler.WriteLogMessageAsync(logMessage);
+            RaiseEvent(logMessage);
         }
     }
 }
