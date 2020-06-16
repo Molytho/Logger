@@ -73,7 +73,7 @@ namespace Molytho.Logger
                 disposedValue = true;
             }
         }
-        void IDisposable.Dispose()
+        public void Dispose()
         {
             Dispose(true);
         }
