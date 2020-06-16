@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Molytho.Logger
 {
-    public partial class Logger<T> : IDisposable
+    public partial class Logger<T> : IDisposable, IAsyncDisposable
     {
         private bool disposedValue = false; // Dient zur Erkennung redundanter Aufrufe.
 
@@ -25,6 +26,12 @@ namespace Molytho.Logger
         public void Dispose()
         {
             Dispose(true);
+        }
+        [DebuggerHidden]
+        public ValueTask DisposeAsync()
+        {
+            disposedValue = true;
+            return ((IAsyncDisposable)fileHandler).DisposeAsync();
         }
     }
 }
