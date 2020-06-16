@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,29 +9,22 @@ namespace Molytho.Logger
 {
     public partial class Logger<T> where T : System.Enum
     {
-        #region DebugLog
-        public T DebugLogLevel { get; }
-        public bool IsDebugLogEnabled { get; }
-        #endregion
+        public readonly T[] hiddenTypes;
 
-        private void WriteLogMessage(in LogMessage<T> message)
-        {
-            fileHandler.WriteLogMessage(message);
-            RaiseEvent(message);
-        }
         [DebuggerHidden]
         public void WriteLogMessage(T logLevel, string message)
         {
-            if(!IsDebugLogEnabled && Equals(logLevel, DebugLogLevel))
+            if(!(hiddenTypes is null) && hiddenTypes.Contains(logLevel))
                 return;
 
             LogMessage<T> logMessage = new LogMessage<T>(logLevel, message, ElapsedTime);
-            WriteLogMessage(logMessage);
+            fileHandler.WriteLogMessage(logMessage);
+            RaiseEvent(logMessage);
         }
         [DebuggerHidden]
         public async Task WriteLogMessageAsync(T logLevel, string message)
         {
-            if(!IsDebugLogEnabled && Equals(logLevel, DebugLogLevel))
+            if(!(hiddenTypes is null) && hiddenTypes.Contains(logLevel))
                 return;
 
             LogMessage<T> logMessage = new LogMessage<T>(logLevel, message, ElapsedTime);

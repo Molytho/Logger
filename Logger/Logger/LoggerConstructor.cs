@@ -8,10 +8,9 @@ namespace Molytho.Logger
     public partial class Logger<T> where T : System.Enum
     {
         [DebuggerHidden]
-        public Logger(T debugEnumType, bool debugLogEnabled = true, bool toSTDOUT = true, params string[] logFilePath) : this(toSTDOUT, logFilePath)
+        public Logger(T[] hiddenTypes, bool toSTDOUT = true, params string[] logFilePath) : this(toSTDOUT, logFilePath)
         {
-            DebugLogLevel = debugEnumType;
-            IsDebugLogEnabled = debugLogEnabled;
+            this.hiddenTypes = hiddenTypes;
         }
 
         [DebuggerHidden]
