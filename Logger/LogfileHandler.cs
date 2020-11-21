@@ -29,6 +29,7 @@ namespace Molytho.Logger
                 foreach(TextWriter item in outputStreams)
                 {
                     item.WriteLine(printMessage);
+                    item.Flush();
                 }
             }
             finally
@@ -45,7 +46,8 @@ namespace Molytho.Logger
                 List<Task> writeTasks = new List<Task>(outputStreams.Length);
                 foreach(TextWriter item in outputStreams)
                 {
-                    writeTasks.Add(item.WriteLineAsync(printMessage));
+                    Task writeTask = item.WriteLineAsync(printMessage);
+                    writeTasks.Add(writeTask.ContinueWith(_ => item.Flush()));
                 }
                 await Task.WhenAll(writeTasks);
             }
