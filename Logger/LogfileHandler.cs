@@ -24,7 +24,7 @@ namespace Molytho.Logger
         private readonly TextWriter[] outputStreams;
         private readonly SemaphoreSlim outputStreamSynchronisation;
 
-        public void WriteLogMessage(LogMessage<T> message, object formatProviderData, bool shouldFlush = false)
+        public void WriteLogMessage(LogMessage<T> message, object? formatProviderData, bool shouldFlush = false)
         {
             string printMessage = message.ToString(formater, formatProviderData);
             try
@@ -42,7 +42,7 @@ namespace Molytho.Logger
                 outputStreamSynchronisation.Release();
             }
         }
-        public async Task WriteLogMessageAsync(LogMessage<T> message, object formatProviderData, bool shouldFlush = false)
+        public async Task WriteLogMessageAsync(LogMessage<T> message, object? formatProviderData, bool shouldFlush = false)
         {
             string printMessage = message.ToString(formater, formatProviderData);
             try

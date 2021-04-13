@@ -9,7 +9,8 @@ namespace Molytho.Logger
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetName<T>(this T enumObject) where T : System.Enum
         {
-            return Enum.GetName(typeof(T), enumObject);
+            //Null return value is not an issue when the caller doesn't mess with casts
+            return Enum.GetName(typeof(T), enumObject)!;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetMaxNameLength<T>() where T : System.Enum

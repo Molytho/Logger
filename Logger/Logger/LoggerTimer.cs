@@ -5,7 +5,7 @@ using System.Text;
 namespace Molytho.Logger
 {
     public partial class Logger<T>
-        where T : Enum
+        where T : notnull, Enum
     {
         private readonly DateTime startTime;
         private DateTime Now => DateTime.Now;

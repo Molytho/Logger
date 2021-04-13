@@ -6,10 +6,10 @@ using System.Text;
 namespace Molytho.Logger
 {
     public partial class Logger<T>
-        where T : Enum
+        where T : notnull, Enum
     {
         #region LevelEvents
-        private readonly Dictionary<T, Action<LogMessage<T>>> logEvents;
+        private readonly Dictionary<T, Action<LogMessage<T>>?> logEvents;
 
         [DebuggerHidden]
         public void AddEvent(T enumType, Action<LogMessage<T>> action)
@@ -23,7 +23,7 @@ namespace Molytho.Logger
         }
         #endregion
         #region Global
-        public event Action<LogMessage<T>> LogMessageAdded;
+        public event Action<LogMessage<T>>? LogMessageAdded;
         #endregion
 
         private void RaiseEvent(in LogMessage<T> message)

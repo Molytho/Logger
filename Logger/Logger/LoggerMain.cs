@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 namespace Molytho.Logger
 {
     public partial class Logger<T>
-        where T : Enum
+        where T : notnull, Enum
     {
         public T MinLogLevel { get; set; }
 
         [DebuggerHidden]
-        public void WriteLogMessage(T logLevel, string message, object formatProviderData = null)
+        public void WriteLogMessage(T logLevel, string message, object? formatProviderData = null)
         {
             if(logLevel.CompareTo(MinLogLevel) < 0)
                 return;
@@ -23,7 +23,7 @@ namespace Molytho.Logger
             RaiseEvent(logMessage);
         }
         [DebuggerHidden]
-        public async Task WriteLogMessageAsync(T logLevel, string message, object formatProviderData = null)
+        public async Task WriteLogMessageAsync(T logLevel, string message, object? formatProviderData = null)
         {
             if(logLevel.CompareTo(MinLogLevel) < 0)
                 return;

@@ -9,7 +9,7 @@ namespace Molytho.Logger
     {
         public override string ToString()
             => ToString(DefaultLogMessageFormater<T>.Instance, null);
-        public string ToString(ILogMessageFormater<T> formater, object formatProviderData)
+        public string ToString(ILogMessageFormater<T> formater, object? formatProviderData)
             => formater.FormateLogMessage(this, formatProviderData);
     }
 }
