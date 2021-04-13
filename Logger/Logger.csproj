@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <UserSecretsId>2e2b34f9-41a7-4c3c-aedc-230b9b40f93b</UserSecretsId>
+    <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Molytho.Logger</RootNamespace>
-    <Platforms>AnyCPU;x64</Platforms>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
