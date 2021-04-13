@@ -5,7 +5,7 @@ namespace TestConsole
 {
     class Program
     {
-        static Logger<LogLevel> Logger = new Logger<LogLevel>(/*new TestConsole.LogLevel[]{ LogLevel.Debug },*/ true);
+        static Logger<LogLevel> Logger = new Logger<LogLevel>(true);
         static void Main(string[] args)
         {
             Logger.AddEvent(LogLevel.Debug, x);

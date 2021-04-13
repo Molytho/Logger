@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Molytho.Logger
 {
     public partial class Logger<T> : IDisposable, IAsyncDisposable
+        where T : Enum
     {
         private bool disposedValue = false; // Dient zur Erkennung redundanter Aufrufe.
 

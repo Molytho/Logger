@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace Molytho.Logger
 {
-    public partial class Logger<T> where T : System.Enum
+    public partial class Logger<T>
+        where T : Enum
     {
-        public readonly T[] hiddenTypes;
+        public T[] HiddenTypes { get; }
 
         [DebuggerHidden]
         public void WriteLogMessage(T logLevel, string message)
         {
-            if(!(hiddenTypes is null) && hiddenTypes.Contains(logLevel))
+            if(!(HiddenTypes is null) && HiddenTypes.Contains(logLevel))
                 return;
 
             LogMessage<T> logMessage = new LogMessage<T>(logLevel, message, ElapsedTime);
@@ -24,7 +25,7 @@ namespace Molytho.Logger
         [DebuggerHidden]
         public async Task WriteLogMessageAsync(T logLevel, string message)
         {
-            if(!(hiddenTypes is null) && hiddenTypes.Contains(logLevel))
+            if(!(HiddenTypes is null) && HiddenTypes.Contains(logLevel))
                 return;
 
             LogMessage<T> logMessage = new LogMessage<T>(logLevel, message, ElapsedTime);

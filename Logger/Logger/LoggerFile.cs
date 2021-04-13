@@ -4,9 +4,10 @@ using System.Text;
 
 namespace Molytho.Logger
 {
-    public partial class Logger<T> where T : System.Enum
+    public partial class Logger<T>
+        where T : Enum
     {
-        private readonly LogfileHandler fileHandler;
+        private readonly LogfileHandler<T> fileHandler;
 
     }
 }

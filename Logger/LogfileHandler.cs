@@ -1,29 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Molytho.Logger
 {
-    class LogfileHandler : IDisposable, IAsyncDisposable
+    class LogfileHandler<T> : IDisposable, IAsyncDisposable
+        where T : Enum
     {
-        public LogfileHandler(params TextWriter[] pOutputStreams)
+        public LogfileHandler(ILogMessageFormater<T> formater, params TextWriter[] pOutputStreams)
         {
             if(pOutputStreams is null || pOutputStreams.Length == 0)
                 throw new ArgumentException("A minimum of one output stream must be specified", nameof(pOutputStreams));
             outputStreams = pOutputStreams;
             outputStreamSynchronisation = new SemaphoreSlim(1, 1);
+            this.formater = formater;
         }
+
+        private readonly ILogMessageFormater<T> formater;
         private readonly TextWriter[] outputStreams;
         private readonly SemaphoreSlim outputStreamSynchronisation;
 
-        public void WriteLogMessage<T>(in LogMessage<T> message, bool shouldFlush = false)
-            where T : Enum
+        public void WriteLogMessage(in LogMessage<T> message, bool shouldFlush = false)
         {
-            string printMessage = message.ToString();
+            string printMessage = message.ToString(formater);
             try
             {
                 outputStreamSynchronisation.Wait();
@@ -39,10 +42,9 @@ namespace Molytho.Logger
                 outputStreamSynchronisation.Release();
             }
         }
-        public async Task WriteLogMessageAsync<T>(LogMessage<T> message, bool shouldFlush = false)
-            where T : Enum
+        public async Task WriteLogMessageAsync(LogMessage<T> message, bool shouldFlush = false)
         {
-            string printMessage = message.ToString();
+            string printMessage = message.ToString(formater);
             try
             {
                 await outputStreamSynchronisation.WaitAsync();

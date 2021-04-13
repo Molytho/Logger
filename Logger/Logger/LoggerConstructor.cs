@@ -5,17 +5,21 @@ using System.IO;
 
 namespace Molytho.Logger
 {
-    public partial class Logger<T> where T : System.Enum
+    public partial class Logger<T>
+        where T : Enum
     {
         [DebuggerHidden]
-        public Logger(T[] hiddenTypes, bool toSTDOUT = true, params string[] logFilePath) : this(toSTDOUT, logFilePath)
+        public Logger(T[] hiddenTypes, bool toSTDOUT = true, ILogMessageFormater<T> messageFormater = null, params string[] logFilePath)
+            : this(toSTDOUT, messageFormater, logFilePath)
         {
-            this.hiddenTypes = hiddenTypes;
+            this.HiddenTypes = hiddenTypes;
         }
 
         [DebuggerHidden]
-        public Logger(bool toSTDOUT = true, params string[] logFilePath) : this()
+        public Logger(bool toSTDOUT = true, ILogMessageFormater<T> messageFormater = null, params string[] logFilePath)
+            : this()
         {
+            ILogMessageFormater<T> formater = messageFormater ?? DefaultLogMessageFormater<T>.Instance;
             TextWriter[] logFiles = new TextWriter[logFilePath.Length + (toSTDOUT ? 1 : 0)];
             for(int i = 0; i < logFilePath.Length; i++)
             {
@@ -24,12 +28,14 @@ namespace Molytho.Logger
 
             if(toSTDOUT)
                 logFiles[logFilePath.Length] = Console.Out;
-            fileHandler = new LogfileHandler(logFiles);
+            fileHandler = new LogfileHandler<T>(formater, logFiles);
         }
         [DebuggerHidden]
-        public Logger(params TextWriter[] pWriterStreams) : this()
+        public Logger(ILogMessageFormater<T> messageFormater = null, params TextWriter[] pWriterStreams)
+            : this()
         {
-            fileHandler = new LogfileHandler(pWriterStreams);
+            ILogMessageFormater<T> formater = messageFormater ?? DefaultLogMessageFormater<T>.Instance;
+            fileHandler = new LogfileHandler<T>(formater, pWriterStreams);
         }
 
         [DebuggerHidden]

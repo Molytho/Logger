@@ -5,7 +5,8 @@ using System.Text;
 
 namespace Molytho.Logger
 {
-    public partial class Logger<T> where T : System.Enum
+    public partial class Logger<T>
+        where T : Enum
     {
         #region LevelEvents
         private readonly Dictionary<T, Action<LogMessage<T>>> logEvents;
