@@ -9,13 +9,6 @@ namespace Molytho.Logger
         where T : Enum
     {
         [DebuggerHidden]
-        public Logger(T[] hiddenTypes, bool toSTDOUT = true, ILogMessageFormater<T> messageFormater = null, params string[] logFilePath)
-            : this(toSTDOUT, messageFormater, logFilePath)
-        {
-            this.HiddenTypes = hiddenTypes;
-        }
-
-        [DebuggerHidden]
         public Logger(bool toSTDOUT = true, ILogMessageFormater<T> messageFormater = null, params string[] logFilePath)
             : this()
         {
