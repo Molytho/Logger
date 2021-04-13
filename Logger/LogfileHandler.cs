@@ -13,14 +13,15 @@ namespace Molytho.Logger
         public LogfileHandler(params TextWriter[] pOutputStreams)
         {
             if(pOutputStreams is null || pOutputStreams.Length == 0)
-                throw new ArgumentException("A minimum of one output stream must be specified", "pOutputStream");
+                throw new ArgumentException("A minimum of one output stream must be specified", nameof(pOutputStreams));
             outputStreams = pOutputStreams;
             outputStreamSynchronisation = new SemaphoreSlim(1, 1);
         }
         private readonly TextWriter[] outputStreams;
         private readonly SemaphoreSlim outputStreamSynchronisation;
 
-        public void WriteLogMessage<T>(in LogMessage<T> message) where T : System.Enum
+        public void WriteLogMessage<T>(in LogMessage<T> message)
+            where T : Enum
         {
             string printMessage = message.ToString();
             try
@@ -37,7 +38,8 @@ namespace Molytho.Logger
                 outputStreamSynchronisation.Release();
             }
         }
-        public async Task WriteLogMessageAsync<T>(LogMessage<T> message) where T : System.Enum
+        public async Task WriteLogMessageAsync<T>(LogMessage<T> message)
+            where T : Enum
         {
             string printMessage = message.ToString();
             try
