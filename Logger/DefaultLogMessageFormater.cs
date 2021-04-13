@@ -12,7 +12,7 @@ namespace Molytho.Logger
         private static readonly int MAX_NAME_SIZE = EnumExtensions.GetMaxNameLength<T>();
         private static readonly string FORMAT_STRING = $"[{{0,-{MAX_NAME_SIZE}}}][{{1}}] {{2}}";
 
-        public string FormateLogMessage(LogMessage<T> logMessage)
+        public string FormateLogMessage(LogMessage<T> logMessage, object formatProviderData)
         {
             T level = logMessage.Type;
             string message = logMessage.Message;

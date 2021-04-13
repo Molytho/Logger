@@ -19,8 +19,8 @@ namespace Molytho.Logger
         public TimeSpan Time { get; }
 
         public readonly override string ToString()
-            => ToString(DefaultLogMessageFormater<T>.Instance);
-        public readonly string ToString(ILogMessageFormater<T> formater)
-            => formater.FormateLogMessage(this);
+            => ToString(DefaultLogMessageFormater<T>.Instance, null);
+        public readonly string ToString(ILogMessageFormater<T> formater, object formatProviderData)
+            => formater.FormateLogMessage(this, formatProviderData);
     }
 }

@@ -5,6 +5,6 @@ namespace Molytho.Logger
     public interface ILogMessageFormater<T>
         where T : Enum
     {
-        public string FormateLogMessage(LogMessage<T> logMessage);
+        public string FormateLogMessage(LogMessage<T> logMessage, object formatProviderData);
     }
 }
