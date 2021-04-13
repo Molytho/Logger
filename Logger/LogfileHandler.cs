@@ -20,7 +20,7 @@ namespace Molytho.Logger
         private readonly TextWriter[] outputStreams;
         private readonly SemaphoreSlim outputStreamSynchronisation;
 
-        public void WriteLogMessage<T>(in LogMessage<T> message)
+        public void WriteLogMessage<T>(in LogMessage<T> message, bool shouldFlush = false)
             where T : Enum
         {
             string printMessage = message.ToString();
@@ -30,7 +30,8 @@ namespace Molytho.Logger
                 foreach(TextWriter item in outputStreams)
                 {
                     item.WriteLine(printMessage);
-                    item.Flush();
+                    if(shouldFlush)
+                        item.Flush();
                 }
             }
             finally
@@ -38,7 +39,7 @@ namespace Molytho.Logger
                 outputStreamSynchronisation.Release();
             }
         }
-        public async Task WriteLogMessageAsync<T>(LogMessage<T> message)
+        public async Task WriteLogMessageAsync<T>(LogMessage<T> message, bool shouldFlush = false)
             where T : Enum
         {
             string printMessage = message.ToString();
@@ -49,7 +50,8 @@ namespace Molytho.Logger
                 foreach(TextWriter item in outputStreams)
                 {
                     Task writeTask = item.WriteLineAsync(printMessage);
-                    writeTasks.Add(writeTask.ContinueWith(_ => item.Flush()));
+                    if(shouldFlush)
+                        writeTasks.Add(writeTask.ContinueWith(_ => item.Flush()));
                 }
                 await Task.WhenAll(writeTasks);
             }
