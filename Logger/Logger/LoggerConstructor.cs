@@ -10,7 +10,7 @@ namespace Molytho.Logger
     {
 
         [DebuggerHidden]
-        public Logger(bool toSTDOUT = true, ILogMessageFormater<T> messageFormater = null, params string[] logFilePath)
+        public Logger(bool toSTDOUT = true, T minLogLevel = default, ILogMessageFormater<T> messageFormater = null, params string[] logFilePath)
         {
             ILogMessageFormater<T> formater = messageFormater ?? DefaultLogMessageFormater<T>.Instance;
             TextWriter[] logFiles = new TextWriter[logFilePath.Length + (toSTDOUT ? 1 : 0)];
@@ -22,6 +22,7 @@ namespace Molytho.Logger
 
             fileHandler = new LogfileHandler<T>(formater, logFiles);
             startTime = Now;
+            MinLogLevel = minLogLevel;
             T[] enumTypes = (T[])Enum.GetValues(typeof(T));
             logEvents = new Dictionary<T, Action<LogMessage<T>>>(enumTypes.Length);
             foreach(var item in enumTypes)
@@ -29,12 +30,13 @@ namespace Molytho.Logger
         }
 
         [DebuggerHidden]
-        public Logger(ILogMessageFormater<T> messageFormater = null, params TextWriter[] pWriterStreams)
+        public Logger(T minLogLevel = default, ILogMessageFormater<T> messageFormater = null, params TextWriter[] pWriterStreams)
         {
             ILogMessageFormater<T> formater = messageFormater ?? DefaultLogMessageFormater<T>.Instance;
 
             fileHandler = new LogfileHandler<T>(formater, pWriterStreams);
             startTime = Now;
+            MinLogLevel = minLogLevel;
             T[] enumTypes = (T[])Enum.GetValues(typeof(T));
             logEvents = new Dictionary<T, Action<LogMessage<T>>>(enumTypes.Length);
             foreach(var item in enumTypes)
